@@ -1,0 +1,658 @@
+﻿@using System.Web.Script.Serialization
+@using HCRGUniversityMgtApp.Infrastructure.Global;
+@model HCRGUniversityMgtApp.Domain.ViewModels.EducationViewModel.AddEducationViewModel
+@{
+    ViewBag.Title = "Education";
+}
+@section header{
+    <a class="navbar-brand" href="#">Education Screen</a>
+}
+<div class="inner-content">
+    <!--start row -->
+    <div class="row">
+        <div class="panel-wrapper">
+            <div class="panel panel-default">
+                <div id="divEducation">
+                    <div class="panel-body">
+                        <div class="modal fade" id="EditorModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none !important;">
+                            <div class="modal-dialog position-center set-popup">
+                                <div class="modal-content" style="height: 830px;">
+                                    <div class="modal-header">
+                                        <button type="button" id="btnClose" class="close" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title">Add Content</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="panel-body">
+                                            <div id="divEditor">
+                                                @using (Html.BeginForm(GlobalConst.Actions.EducationController.ShowEditor, GlobalConst.Controllers.Education, FormMethod.Post))
+                                                {
+                                                    @Html.Raw(ViewBag.Editor)
+                                                }
+                                            </div>
+                                            <div style="padding-top: 10px;">
+                                                <button type="button" data-dismiss="modal" aria-hidden="true" id="btnSaveandContinue" class="btn btn-default">Save and Continue</button>
+                                                <button type="button" aria-hidden="true" id="btnClose1" class="btn btn-default">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @using (Html.BeginForm(GlobalConst.Actions.EducationController.addEducation, GlobalConst.Controllers.Education, FormMethod.Post, new
+    {
+        id = "frmEducation",
+        enctype = "multipart/form-data",
+        data_bind = "ajaxForm:{ success: function(responseText, statusText, xhr, $form){ AddEducationSuccess(responseText);},beforeSubmit: EducationFormBeforeSubmit}"
+    }))
+                    {
+                        <!-- Default panel contents -->
+   <div class="checkout-wrap" >
+            <ul class="checkout-bar green-bar">
+                <li id="EducationLinkCompleted" class="previous visited">Education</li>
+                <li id="CollegeLinkCompleted" class="previous visited">Subject Matter</li>
+                <li id="ProfessionLinkCompleted" class="previous visited">Profession</li>
+                <li id="ModuleLinkCompleted" class="previous visited">Module</li>
+            </ul>
+        </div>
+                        <br />  <br /><br /> <br />  <br /><br />
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Education Format</label>
+                <a href="#" class="inner-content-link"><i class="glyphicon glyphicon-calendar"></i></a>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control-widget set-selectbox" id="EducationFormat" name="EducationFormatAvailable[0].EducationFormatID" required="required" data-bind="options: EducationFormats, optionsText: 'EducationFormatType',
+                                   optionsValue: 'EducationFormatID',value:selectedEducationFormat,
+                                    optionsCaption: 'Select Any Format',jqBootstrapValidation: {}"></select>
+                <input type="hidden" name="EducationFormatAvailable[0].EducationAvailableID" data-bind="value:EducationAvailableID">
+            </div>
+        </div>
+        <div id="panelOnsite" style="display: none;">
+            <div class="panel-body">
+                <div class="col-md-3">
+                    <label>Course Location :</label>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="text" class="form-control" required="required" id="CourseLocation" data-bind="value: CourseLocation" name="Education.CourseLocation" placeholder="Course Location">
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-3">
+                    <label>Course Start Time :</label>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="text" class="form-control timepicker" required="required" id="CourseStartTime" data-bind="value: CourseStartTime,masked: CourseStartTime,mask : '99:99'" placeholder="HH:MM" name="Education.CourseStartTime">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Course Name :</label>
+            </div>
+            <div class="col-md-4">
+                <input type="hidden" name="Education.EducationID" id="hdEducationID" data-bind="value: EducationID" />
+                <input type="hidden" name="CoursePreTestID" id="hdCoursePreTestID" />
+                <input type="hidden" name="CourseExamID" id="hdCourseExamID" />
+                <input type="hidden" name="CourseEvaluationID" id="hdCourseEvaluationID" />
+                <input type="hidden" name="Education.CourseFile" id="hdCourseFile" data-bind="value: CourseFile" />
+                <input type="hidden" name="EducationDetailPage.EPageID" data-bind="value: EPageID" />
+                <input type="hidden" name="EducationDetailPage.PDate" data-bind="value: PDate" />
+                <input type="hidden" name="EducationDetailPage.EducationID" data-bind="value: EducationID" />
+                <input type="hidden" id="hfEducatioReadyToDisplay" name="Education.ReadyToDisplay" data-bind="value: ReadyToDisplay" />
+                @*  <input type="hidden" name="Education.HardCopyPriceAID" data-bind="value: HardCopyPriceAID" />*@
+                <input type="hidden" name="Education.OnlinePriceAID" data-bind="value: OnlinePriceAID" />
+                <div class="form-group">
+                    <input type="text" class="form-control" maxlength="90" required="required" data-bind="value: CourseName,jqBootstrapValidation: {}" name="Education.CourseName" placeholder="Course Name">
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Course Code :</label>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="text" class="form-control" required="required" data-bind="value: CourseCode,jqBootstrapValidation: {}" name="Education.CourseCode" placeholder="CourseCode">
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Description :</label>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @*   <input type="text" class="form-control" required="required" data-bind="value: CourseDescription,jqBootstrapValidation: {}" name="Education.CourseDescription" placeholder="Course Description">*@
+                    <textarea required="required" maxlength="350" name="Education.CourseDescription" data-bind="value: CourseDescription,jqBootstrapValidation: {}" placeholder="Course Description" class="form-control resize" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Course Time :</label>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="text" class="form-control" required="required" id="CourseTime" maxlength="10" name="Education.CourseTime" data-bind="value: CourseTime,jqBootstrapValidation: {}" placeholder="Course Time" />
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Course Price ($):</label>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="text" class="form-control" required="required" id="CoursePrice" onkeypress="return validate(event)" name="Education.CoursePrice" data-bind="    value: CoursePrice,jqBootstrapValidation: {}" placeholder="Course  Price" />
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Course Start Date :</label>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="text" class="form-control datepicker" placeholder="Course Start Date" id="StartDate" required="required" data-validation-regex-message="MM/DD/YYYY" data-validation-regex-regex="^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d+$" data-bind="value:CourseStartDate,jqBootstrapValidation: {}" name="Education.CourseStartDate">
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Course End Date :</label>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="text" class="form-control datepicker" placeholder="Course End Date" id="EndDate" required="required" data-validation-regex-message="MM/DD/YYYY" data-validation-regex-regex="^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d+$" data-bind="value:CourseEndDate,jqBootstrapValidation: {}" name="Education.CourseEndDate">
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Presenter Name :</label>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="text" class="form-control" required="required" data-bind="value: CoursePresenterName,jqBootstrapValidation: {}" name="Education.CoursePresenterName" placeholder="Presenter Name">
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Course Allotted Time :</label>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input style="width:30% !important" type="text" class="form-control" required="required" id="CourseAllotedTime" onkeypress="return isNumberKey(event)" name="Education.CourseAllotedTime" data-bind="value: CourseAllotedTime,jqBootstrapValidation: {}" placeholder="Allotted Time" />
+                    <select style="float:right;width:60% !important;margin-top:-34px" class="form-control-widget set-selectbox" id="CouseAllotedDaysMonth" name="Education.CouseAllotedDaysMonth" required="required" data-bind="options: CourseWays, optionsText: 'CousreWayType',
+                                   optionsValue: 'CouseAllotedDaysMonth',value:selectedWays,
+                                   jqBootstrapValidation: {}"></select>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Education Content :</label>
+            </div>
+            <div class="col-md-4">
+                <button data-target="#EditorModal" id="EditorModalPopUp" data-toggle="modal" data-backdrop="static" data-keyboard="false" class="btn btn-default">Add Content</button>
+                <input type="hidden" id="hd" name="EducationDetailPage.PContent" />
+                @*<textarea rows="10" class="form-control" required data-bind="value: PContent,jqBootstrapValidation: {}" name="EducationDetailPage.PContent" placeholder="Education Content"></textarea>*@
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Course File :</label>
+            </div>
+            <div class="col-md-4">
+                <div id="dictest" class="form-group">
+                    <input accept="application/pdf" type="file" id="EducationFile" name="Education.EducationFile">
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Pre Test :</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control-widget set-selectbox" id="PreTest" name="EducationPreTestQuestion.PreTestID"
+                        data-bind="options: PreTests, optionsText: 'PreTestName',value: selectedPreTest,
+                                   optionsValue: 'PreTestID',optionsCaption: 'Select Any Option'"></select>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Exam :</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control-widget set-selectbox" id="Exam" name="EducationExamQuestion.ExamID"
+                        data-bind="options: Exams, optionsText: 'ExamName',value: selectedExam,
+                                   optionsValue: 'ExamID',optionsCaption: 'Select Any Option'"></select>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-3">
+                <label>Evaluation :</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control-widget set-selectbox" id="Evaluation" name="EducationEvaluation.EvaluationID"
+                        data-bind="options: Evaluations, optionsText: 'EvaluationName',
+                                   optionsValue: 'EvaluationID',value: selectedEvaluation,optionsCaption: 'Select Any Option'"></select>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="panel panel-default">
+                <div class="panel-heading">Subject Matters</div>
+                <!-- Table -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Subject Matter</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--ko if:CollegeEducation!= null-->
+                        <!-- ko foreach:CollegeEducation -->
+                        <tr>
+                            <td>
+                                <input type="hidden" data-bind="attr: { name: 'CollegeEducation['+ $index() + '\].CollegeID' },value:CollegeID" />
+                                <input type="hidden" data-bind="attr: { name: 'CollegeEducation['+ $index() + '\].CollegeCourseID' },value:CollegeCourseID" />
+                                <input type="hidden" data-bind="attr: { name: 'CollegeEducation['+ $index() + '\].EducationID' },value:$root.EducationID" />
+                                <input type="hidden" data-bind="attr: { name: 'CollegeEducation['+ $index() + '\].CollegeName' },value:CollegeName" />
+                                <span data-bind="text:CollegeName"></span>
+                            </td>
+
+                            <td>
+                                <a href="#" class="inner-content-link blue" style="color: #808080;" data-bind="click:$root.DeleteCollegeEducation">Delete</a>
+                            </td>
+                        </tr>
+                        <!--/ko-->
+                        <!--/ko-->
+                    </tbody>
+                </table>
+            </div>
+            <!-- ko if:CollegeEducationDeleted!= null-->
+            <!-- ko foreach:CollegeEducationDeleted -->
+            <input type="hidden" data-bind="attr: { name: 'CollegeEducationDeleted['+ $index() + '\].CollegeID' },value:CollegeID" />
+            <input type="hidden" data-bind="attr: { name: 'CollegeEducationDeleted['+ $index() + '\].CollegeCourseID' },value:CollegeCourseID" />
+            <input type="hidden" data-bind="attr: { name: 'CollegeEducationDeleted['+ $index() + '\].Active' },value:Active" />
+            <!--/ko-->
+            <!--/ko-->
+        </div>
+                        
+        <div class="panel-body" style="margin-top: -20px;">
+            <div class="col-md-3">
+                <button id="btnpopup" class="btn btn-default" data-bind="click:getColleges" data-toggle="modal" data-target="#divEducationCollege">Add Subject Matter</button>
+            </div>
+        </div>
+             <div class="panel-body">
+            <div class="panel panel-default">
+                <div class="panel-heading">Add Profession</div>
+                <!-- Table -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Add Profession</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--ko if:ProfessionEducation!= null-->
+                        <!-- ko foreach:ProfessionEducation -->
+                        <tr>
+                            <td>
+                                <input type="hidden" data-bind="attr: { name: 'ProfessionEducation['+ $index() + '\].ProfessionID' },value:ProfessionID" />
+                                <input type="hidden" data-bind="attr: { name: 'ProfessionEducation['+ $index() + '\].EducationProfessionID' },value:EducationProfessionID" />
+                                <input type="hidden" data-bind="attr: { name: 'ProfessionEducation['+ $index() + '\].EducationID' },value:$root.EducationID" />
+                                <input type="hidden" data-bind="attr: { name: 'ProfessionEducation['+ $index() + '\].ProfessionTitle' },value:ProfessionTitle" />
+                                <span data-bind="text:ProfessionTitle"></span>
+                            </td>
+
+                            <td>
+                                <a href="#" class="inner-content-link blue" style="color: #808080;" data-bind="click:$root.DeleteProfessionEducation">Delete</a>
+                            </td>
+                        </tr>
+                        <!--/ko-->
+                        <!--/ko-->
+                    </tbody>
+                </table>
+            </div>
+            <!-- ko if:ProfessionEducationDeleted!= null-->
+            <!-- ko foreach:ProfessionEducationDeleted -->
+            <input type="hidden" data-bind="attr: { name: 'ProfessionEducationDeleted['+ $index() + '\].ProfessionID' },value:ProfessionID" />
+            <input type="hidden" data-bind="attr: { name: 'ProfessionEducationDeleted['+ $index() + '\].EducationProfessionID' },value:EducationProfessionID" />
+            <input type="hidden" data-bind="attr: { name: 'ProfessionEducationDeleted['+ $index() + '\].Active' },value:Active" />
+            <!--/ko-->
+            <!--/ko-->
+        </div>
+                        
+        <div class="panel-body" style="margin-top: -20px;">
+            <div class="col-md-3">
+                <button id="btnpopupProf" class="btn btn-default" data-bind="click:getProfessions" data-toggle="modal" data-target="#divEducationProfession">Add Profession</button>
+            </div>
+        </div>
+        <div class="panel-body text-right">
+            <button type="submit" onclick="submitform()" class="btn btn-default">Save and Continue</button>
+        </div>
+        }
+        @Html.Partial("Education/_AddCollegeEducationPartial")
+                    @Html.Partial("Education/_AddProfessionEducationPartial")
+        @*@Html.Partial("Education/_AddEducationFormat")*@
+    </div>
+                <div id="divMainEducationModule" style="display: none">
+                    <div id="divEducationModule">
+                        <div class="panel-body">
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog position-center">
+                                    <div class="modal-content" style="height:auto;">
+                                        <div class=" modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title">Add Module Section</h4>
+                                    </div>
+                                        <div class="modal-body">
+                                            <div class="panel-body">
+                                                @{ Html.RenderPartial("~/Views/Shared/EducationModule/_EducationModulePartial.cshtml");  }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Modules</div>
+                                <!-- Table -->
+                                <table class="table table-fixed-1 table-striped">
+                                    <thead>
+                                        <tr class="clearfix col-md-12 paddingleft-none">
+                                            <th class="col-md-2">Name</th>
+                                            <th class="col-md-5">Description</th>
+                                            <th class="col-md-1">Time</th>
+                                            <th class="col-md-1">Position</th>
+                                            <th class="col-md-2">Uploaded File</th>
+                                            <th class="col-md-1">Action</th>
+                                            @* <th>SubModule Description :</th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody class="col-md-12" id="main" data-bind="event: { scroll: scrolled }">
+                                        <!--ko if:EducationModuleResults!= null-->
+                                        <!-- ko foreach:EducationModuleResults -->
+                                        <tr class="clearfix">
+                                            <td class="col-md-2">
+                                                <span data-bind="text:EducationModuleName" />
+                                                <input type="hidden" name="hdfEducationModuleID" id="hdfEducationModuleID" data-bind="value:EducationModuleID" />
+                                            </td>
+                                            <td class="col-md-5" style="text-align: justify;"><span data-bind="text:EducationModuleShortDesc" /></td>
+                                            <td class="col-md-1 paddingleft10"><span data-bind="text:EducationModuleTime" /></td>
+                                            <td class="col-md-1 paddingleft10"><span data-bind="text:EducationModulePosition" /></td>
+                                            <td class="col-md-2 paddingleft10">
+                                                <!--ko if:EducationModuleTypeFile() == "1"-->
+                                                <a href="#" class="inner-content-link blue" data-bind="click:$root.popModule" data-toggle="modal" data-target="#myModalPhoto" data-backdrop="static" data-keyboard="false" style="color: #808080;"><span>Content</span></a>
+                                                <!--/ko-->
+                                                <!--ko if:EducationModuleTypeFile() == "2"-->
+                                                <a href="#" class="inner-content-link blue" data-bind="click:$root.popModule" data-toggle="modal" data-target="#myModalPhoto" data-backdrop="static" data-keyboard="false" style="color: #808080;"><span>PPT</span></a>
+                                                <!--/ko-->
+                                                <!--ko if:EducationModuleTypeFile() == "3"-->
+                                                <a href="#" class="inner-content-link blue" data-bind="click:$root.popModule" data-toggle="modal" data-target="#myModalPhoto" data-backdrop="static" data-keyboard="false" style="color: #808080;"><span>Video</span></a>
+                                                <!--/ko-->
+                                            </td>
+                                            <td class="col-md-1 paddingleft10">
+                                                <a href="#" class="inner-content-link blue" data-bind="click:$root.EditModule" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false" style="color: #808080;">Edit</a>
+                                                <a href="#" class="inner-content-link blue" data-bind="click:$root.deleteModule" style="color: #808080; margin-left: 15px">Delete</a>
+                                            </td>
+                                            @*<td style="visibility:hidden"><a href="#" class="inner-content-link blue" style="color: #808080;" data-toggle="modal" data-target="#SubModuleModal" data-bind="click:$root.ShowAddSubModule">Show/Add Sub-Module</a></td>*@
+                                        </tr>
+                                        <!--/ko-->
+                                        <!--/ko-->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="panel-body" style="margin-top: -20px;">
+                            <div class="col-md-3">
+                                <button class="btn btn-default" onclick="hideimage()" href="#" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#myModal" id="addmodule">Add Module</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="modal fade back" id="myModalPhoto" role="dialog" aria-labelledby="myModalPhotoLabel" aria-hidden="true">
+                            <div class="modal-dialog position-center" style="width: 67%">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" onclick="StopVideo();" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title">Education Module Uploaded File</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="panel-body">
+                                            @{ Html.RenderPartial("~/Views/Shared/EducationModule/_EducationModuleUploadedFilePartial.cshtml");  }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+              
+
+                </div>
+                <div id="divMainEducationCredential" style="display: none">
+
+                    <div class="panel-body">
+                        <div class="modal fade" id="myEducationCredentialModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="z-index: 1041 !important;">
+                            <div class="modal-dialog position-center">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" id="btncloseEducationCredential" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title">Add Credential Section</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="panel-body">
+
+                                            @{ Html.RenderPartial("~/Views/Shared/Education/_AddEducationCredential.cshtml");  }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"> Credential</div>
+                            <!-- Table -->
+                            <table class="table table-fixed-1 table-striped">
+                                <thead>
+                                    <tr class="clearfix col-md-12 paddingleft-none">
+                                        <th class="col-md-1">Credential Unit</th>
+                                        <th class="col-md-3">Credential Type</th>
+                                        <th class="col-md-3">Credential Program</th>
+                                        <th class="col-md-3">Accreditor</th>
+                                        <th class="col-md-1">Status</th>
+                                        <th class="col-md-1">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="col-md-12" id="mainCre">
+                                    <!--ko if:EducationCredentialResults!= null-->
+                                    <!-- ko foreach:EducationCredentialResults -->
+                                    <tr class="clearfix">
+                                        <td class="col-md-1">
+                                            <span data-bind="text:CredentialUnit" />
+                                            <input type="hidden" name="hdfCredentialID" id="hdfCredentialID" data-bind="value:CredentialID" />
+                                        </td>
+                                        <td class="col-md-3">
+                                            <span data-bind="text:CredentialType" />
+                                           
+                                        </td>
+                                        <td class="col-md-3" style="text-align: justify;"><span data-bind="text:CredentialProgram" /></td>
+                                        <td class="col-md-3 ">
+
+                                            <input type="hidden" name="hdfAccreditorID" id="hdfAccreditorID" data-bind="value:AccreditorID" />
+                                            <input type="hidden" name="hdfIsActive" id="hdfIsActive" data-bind="value:IsActive" />
+                                            <span data-bind="text:AccreditorName" />
+                                        </td>
+                                        <td class="col-md-1 ">
+
+                                            <a href="#" class="inner-content-link blue" data-bind="click:$root.deleteEducationCredential" style="color: #808080;"><span data-bind="text:IsActive" /></a>
+                                        </td>
+                                        <td class="col-md-1 paddingleft20">
+                                            <a href="#" class="inner-content-link blue" data-bind="click:$root.EditEducationCredential" data-toggle="modal" data-target="#myEducationCredentialModal" style="color: #808080;">Edit</a>
+
+                                        </td>
+                                    </tr>
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="margin-top: -20px;">
+                        <div class="col-md-3">
+                            <button class="btn btn-default" onclick="hideimage()" href="#" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#myEducationCredentialModal" id="addEducationCredential">Add Credential</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loaderDiv1" class="loaderbg">
+        <input class="loader" type="image" id="loading" src="~/Content/imgs/loading.gif">
+    </div>
+    <div id="divscrollnew"></div>
+    <!-- row-end -->
+</div>
+@section scripts{
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.js"></script>
+    <script src="~/Scripts/jquery-ui-sliderAccess.js"></script>
+    <script src="~/Scripts/jquery.maskedinput.min.js"></script>
+    <script src="~/Scripts/InputMaskViewModel.js"></script>
+    <script src="~/Scripts/knockout/custom/knockout.custom-extenders.js"></script>
+    <link href="~/Content/jquery-ui-timepicker-addon.css" rel="stylesheet" />
+    <script src="~/Scripts/knockout/viewmodel/views/Education/AddEducationViewModel.js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/knockout/viewmodel/views/EducationModule/EducationModuleViewModel.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/knockout/viewmodel/views/EducationCredential/EducationCredentialViewModel.js")"></script>
+    <script src="~/Scripts/Plugin/Jquery.checkNumericNumbers.js"></script>
+    <script src="@Url.Content("~/Scripts/jquery.tmpl.js")"></script>
+    <script type="text/javascript">
+        var model = @MvcHtmlString.Create(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(Model));
+        var educationGridViewModel = new EducationGridViewModel(model);
+        ko.applyBindings(educationGridViewModel, $("#divEducation").get(0));
+        var EducationModuleViewModel = new EducationModuleViewModel();
+        EducationModuleViewModel.Init(model.EducationModules);
+        ko.applyBindings(EducationModuleViewModel, $("#divMainEducationModule").get(0));
+
+        var EducationCredentialViewModel = new EducationCredentialViewModel();
+        EducationCredentialViewModel.Init(model);
+        ko.applyBindings(EducationCredentialViewModel, $("#divMainEducationCredential").get(0));
+    </script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".datepicker").datepicker();
+            $('.phonemask').mask('999-999-9999');
+
+            $("#CourseStartTime").timepicker();
+        });
+        var dates = $("#StartDate, #EndDate").datepicker({
+            minDate: "0",
+            maxDate: "+2Y",
+            defaultDate: "+1w",
+            dateFormat: 'mm/dd/yy',
+            numberOfMonths: 1,
+            onSelect: function(date) {
+                for(var i = 0; i < dates.length; ++i) {
+                    if(dates[i].id < this.id)
+                        $(dates[i]).datepicker('option', 'minDate', date);
+                    else if(dates[i].id > this.id)
+                        $(dates[i]).datepicker('option', 'maxDate', date);
+                }
+            }
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        setgrdDesign();
+        function setgrdDesign() {
+            if (!$('#main').hasScrollBar()) {
+                $('#main tr td').each(function(index){
+                    var className = this.className.match(/paddingleft\d+/);
+                    if(className !=null){
+                        $(this).removeClass(className[0]);
+                    }
+                    $(this).addClass("paddingleft-none");
+                });
+            }
+        }
+        jQuery(function($) {
+            $('#main')
+              .bind('afterShow', function() {
+                  alert('afterShow');
+              })
+              .show(1000, function() {
+                  setgrdDesign();
+              })
+              .show();
+        });
+     
+    </script>
+}
+<script type="text/javascript">
+    function RichTextEditor_OnExecUICommand(editor, arg) {
+        var a0 = arg.Arguments[1];
+        if (a0 == "FullScreen")
+        {
+            return false;
+        }
+    }
+    function setFileInfo(fileinput) {
+        var video = document.getElementById('video-container');
+        var fileurl = window.URL.createObjectURL(fileinput.files[0]);
+        video.src = fileurl;
+        document.getElementById('video-container').addEventListener('loadedmetadata', function () {
+            convertMS(document.getElementById('video-container').duration);
+        }, false);
+    }
+    function setFileInfo1() {
+        var video = document.getElementById('video-container');
+        var fileurl = window.URL.createObjectURL(document.getElementById('UploadVideo').files[0]);
+        video.src = fileurl;
+        document.getElementById('video-container').addEventListener('loadedmetadata', function () {
+            convertMS(document.getElementById('video-container').duration);
+        }   , false);
+    }
+    function setFileInfo2() {
+        var video = document.getElementById('video-container');
+        var fileurl = window.URL.createObjectURL(document.getElementById('UploadVideo1').files[0]);
+        video.src = fileurl;
+        document.getElementById('video-container').addEventListener('loadedmetadata', function () {
+            convertMS(document.getElementById('video-container').duration);
+        }   , false);
+    }
+    function validate(key) {
+        var keycode = (key.which) ? key.which : key.keyCode;
+        var phn = document.getElementById('CredentialUnit');
+        if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+            return false;
+        }
+        else {
+            if (phn.value.length < 9) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }      
+</script>
+<script type="text/javascript" src="~/Scripts/jssor.js"></script>
+<script type="text/javascript" src="~/Scripts/jssor.slider.js"></script>

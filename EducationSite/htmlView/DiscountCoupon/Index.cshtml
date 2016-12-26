@@ -1,0 +1,217 @@
+﻿@using System.Web.Script.Serialization
+@using HCRGUniversityMgtApp.Infrastructure.Global;
+@{
+    ViewBag.Title = "Index";
+}
+@section header{
+    <a class="navbar-brand" href="#">Coupon Management</a>
+}
+
+<div id="divAddDiscountCoupon">
+      <div class="inner-content">
+        
+        <!--start row -->
+	<div class="row">
+          <div class="panel-wrapper">
+            <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Coupon Details</div>
+					
+                @using (Html.BeginForm(GlobalConst.Actions.DiscountCouponController.Index , GlobalConst.Controllers.DiscountCoupon, FormMethod.Post))
+{
+        <div>					
+                 <div class="panel-body">
+					  <div class="col-md-3"><label>Coupon Type<span class="red">*</span></label> <a href="#" class="inner-content-link"><i class="glyphicon glyphicon-calendar"></i></a></div>
+					  <div class="col-md-1">
+						  <div class="radio">
+							  <label>
+                    <input type="radio" name="CouponType" id="CouponType1" data-bind="checked: CouponType, checkedValue: 'Percent',event:{change:checkData}" value="Percent" checked>
+								Percent
+							  </label>
+						  </div>
+					  </div>	  
+					  <div class="col-md-3">
+						  <div class="radio">
+							  <label>
+                    <input type="radio" name="CouponType" id="CouponType2" data-bind="checked: CouponType, checkedValue: 'Fixed',event:{change:checkData}" value="Fixed">
+								Fixed Amount
+							  </label>
+						  </div>
+					  </div>
+				  </div> 
+
+				  <div class="panel-body">
+					  <div class="col-md-3"><label>Expiration Date:<span class="red">*</span></label> <a href="#" class="inner-content-link"><i class="glyphicon glyphicon-calendar"></i></a></div>
+					  <div class="col-md-4">
+                           <div class="form-group">
+                            <input type="text" id="CouponExpiryDate"  class="form-control" required="required" data-bind="value: CouponExpiryDate,jqBootstrapValidation: {}"   name="CouponExpiryDate" placeholder="Expiry Date" >
+					</div>
+
+					  </div>
+				  </div>
+				   <div class="panel-body">
+					  <div class="col-md-3"><label>Discount<span class="red">*</span></label> <a href="#" class="inner-content-link"><i class="glyphicon glyphicon-calendar"></i></a></div>
+					  <div class="col-md-4">
+                          <div class="form-group">
+                              <input type="text" required="required" class="form-control" name="CouponDiscount" onkeypress="return validate(event)" placeholder="Discount" data-bind="    value: CouponDiscount,jqBootstrapValidation: {},event:{blur:AddCheckData}" id="CouponDiscount"></div>
+                            </div>
+				  </div>
+				  <div class="panel-body">
+					  <div class="col-md-3"><label>Type<span class="red">*</span></label> <a href="#" class="inner-content-link"><i class="glyphicon glyphicon-calendar"></i></a></div>
+					  <div class="col-md-1">
+						  <div class="radio">
+							  <label>
+								<input type="radio" name="couponFor" id="optionsRadios1"  data-bind="checked: couponFor, checkedValue: 'Course'"  value="Course" checked>
+								Course
+							  </label>
+						  </div>
+					  </div>	  
+					  <div class="col-md-1">
+						  <div class="radio">
+							  <label>
+								<input type="radio" name="couponFor" id="optionsRadios1"  data-bind="checked: couponFor, checkedValue: 'Product'"  value="Product" checked>
+								Product
+							  </label>
+						  </div>
+					  </div>
+				  </div>
+                <div class="panel-body">
+					  <div class="col-md-3"><label>Valid For Course</label> <a href="#" class="inner-content-link"><i class="glyphicon glyphicon-calendar"></i></a></div>
+					  <div class="col-md-4">
+                           <div class="form-group">
+						     <div id="divAllEducation" class="elem text-box-style">
+                         <ul data-bind="foreach: Educations">
+                             <li>
+                                 <input type="checkbox" name="CouponEducationID"    value="EducationID" data-bind="checked:isDone" />
+                                 <span data-bind="text:CourseName" />
+
+                             </li>
+                         </ul>
+
+                     </div>
+                               </div>
+						</div>
+				  </div>
+                    <div class="panel-body">
+					  <div class="col-md-3"><label>Valid For Products
+
+					                        </label> <a href="#" class="inner-content-link"><i class="glyphicon glyphicon-calendar"></i></a></div>
+					  <div class="col-md-4">
+							<select class="form-control-widget set-selectbox">
+								<option> CMS-1500</option>
+								<option>Outpatient</option>							
+							</select><!-- /input-group -->
+						</div>
+				  </div>
+                <div class="panel-body">
+					  <div class="col-md-3"><label>Number Of Coupon</label> <a href="#" class="inner-content-link"><i class="glyphicon glyphicon-calendar"></i></a></div>
+					  <div class="col-md-4">
+                          <div class="form-group">
+                          <input type="text"  class="form-control" required="required" onkeypress="return isNumberKey(event)"  placeholder="Number of Coupons"  data-bind="value: noofcoupon, jqBootstrapValidation: {}" name="noofcoupon" id="noofcoupon">
+                              </div>
+					  </div>
+				  </div>
+				  <div class="panel-body">
+					    <button class="btn btn-default"  data-bind="click:AddDiscouontCoupon" >Create Coupon</button>
+                            <button type="submit" id="btnsubmit" style="visibility:hidden" class="btn btn-default" >Save and Continue</button>
+				  </div>
+            </div>
+                }
+
+                <div class="panel-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Course Coupon</div>
+                        <!-- Table -->
+                        <table class="table table-striped table-fixed-1">
+                            <thead>
+                                <tr class="clearfix text-center col-lg-12">
+                                    <th class="col-lg-2">Coupon Code</th>
+                                    <th class="col-lg-2">Coupon Type</th>
+                                    <th class="col-lg-3">Education </th>
+                                    <th class="col-lg-1">Discount</th>
+                                    <th class="col-lg-2">Expiry Date</th>
+                                    <th class="col-lg-2">IsValid</th>
+                                </tr>
+                            </thead>
+                            <tbody class="col-lg-12" id="main" data-bind="event: { scroll: scrolled }">
+                                <!--ko if:DiscountCouponForCourses!= null-->
+                                <!-- ko foreach:DiscountCouponForCourses -->
+                                <tr class="clearfix row col-lg-12">
+                                    <td class="col-lg-2"><span data-bind="text:CouponCode()" /></td>
+                                    <td class="col-lg-2"><span class="paddingleft10" data-bind="text:CouponType()" /></td>
+                                    <td class="col-lg-3"><span class="paddingleft15" data-bind="text:CourseName()" /></td>
+                                    <!-- ko if:CouponType() == 'Percent'  -->
+                                    <td class="col-lg-1"><span class="paddingleft30" data-bind="text:CouponDiscount()+'%'" /></td>
+                                    <!--/ko-->
+                                    <!-- ko if:CouponType() == 'Fixed'  -->
+                                    <td class="col-lg-1"><span class="paddingleft30" data-bind="text:'$' +(CouponDiscount.extend({numeric:2})())" /></td>
+                                    <!--/ko-->
+                                    <td class="col-lg-2"><span class="paddingleft40" data-bind="date: CouponExpiryDate()" /></td>
+                                    <td class="col-lg-1"><span class="paddingleft45" data-bind="text:CoupanValid()" /></td>
+                                    <td class="col-lg-1">
+                                        <input type="hidden" name="CouponID" id="CouponID" data-bind="value:CouponID()" />
+                                        <a href="#" class="inner-content-link blue" data-bind="click:$root.deleteDiscountCoupon" style="color: #808080;">Delete</a>
+                                    </td>
+
+                                </tr>
+                                <!--/ko-->
+                                <!--/ko-->
+
+                            </tbody>
+
+                        </table>
+                     
+                    </div>
+                </div>
+                <div id="loaderDiv" class="loaderbg">
+                    <input class="loader" type="image" id="loading" src="~/Content/imgs/loading.gif">
+                </div>
+
+            				  </div>
+		</div>
+        <!-- row-end -->
+	</div><!-- /inner-wrapper -->
+          </div>
+    </div>
+
+@section scripts{
+    <script src="~/Scripts/bootstrap/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+     <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Scripts/jquery.maskedinput.min.js"></script>
+     <script src="~/Scripts/Plugin/Jquery.checkNumericNumbers.js"></script>
+     <link href="~/Content/ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/Scripts/knockout/custom/knockout.custom-extenders.js"></script>
+    <script src="~/Scripts/knockout/viewmodel/views/DiscountCoupon/DiscountCouponResultViewModel.js"></script>       
+     <script src="@Url.Content("~/Scripts/jquery.tmpl.js")"></script>
+    <script type="text/javascript">
+        var model = @MvcHtmlString.Create(new JavaScriptSerializer().Serialize(Model));
+        var DiscountCouponallresultViewModel = new DiscountCouponGridViewModel();
+        ko.applyBindings(DiscountCouponallresultViewModel, $("#divAddDiscountCoupon").get(0));
+    </script>
+    <style type="text/css">
+        #main { height:500px;overflow-y:scroll; }
+    </style>
+<script type="text/javascript">
+    if (!$('#main').hasScrollBar()) {
+        $("td[class*='paddingleft']").removeClass(function () {
+            var className = this.className.match(/paddingleft\d+/);
+            $(this).removeClass(className[0]);
+        });
+    }
+    function validate(key) {
+        var keycode = (key.which) ? key.which : key.keyCode;
+        var phn = document.getElementById('CouponDiscount');
+        if (!(keycode == 8 || keycode == 46) && (keycode < 48 || keycode > 57)) {
+            return false;
+        }
+        else {
+            if (phn.value.length < 9) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }  
+</script>
+}

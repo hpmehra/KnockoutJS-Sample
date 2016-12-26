@@ -1,0 +1,97 @@
+﻿@using System.Web.Script.Serialization
+@using HCRGUniversityMgtApp.Infrastructure.Global;
+@{
+    ViewBag.Title = "SearchEducation";
+}
+<div id="divSearchEducation">
+    <div class="panel-body" style="padding:7px !important;">
+        <a class="btn-edu" href="#" data-bind="click:addNewEducation">Create New Education Course</a>
+    </div>
+    <div class="inner-content">
+        <!--start row -->
+        <div class="row">
+            <div class="panel-wrapper">
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Education Screen</div>
+                    <div class="panel-body">
+                        <div class="col-md-3">
+                            <label>Search Education Course </label>
+                            <a href="#" class="inner-content-link"><i class="glyphicon glyphicon-calendar"></i></a>
+                        </div>
+                        <div class="col-md-8">
+                            @using (Html.BeginForm("SearchEducation", GlobalConst.Controllers.Education, FormMethod.Post, new
+                            {
+                                id = "frmSearchEducation",
+                                enctype = "multipart/form-data",
+                                data_bind = "ajaxForm:{ success: function(responseText, statusText, xhr, $form){ SearchEducationSuccess(responseText);},beforeSubmit: EducationSearchFormBeforeSubmit}"
+                            }))
+                            {
+                                <div class="form-group col-md-8">
+                                    <input type="text" name="searchText" class="form-control" data-bind="value:searchText,jqBootstrapValidation: {}" placeholder="Search Course" required="required">
+                                </div>
+                                <button type="submit" class="btn btn-default text-right">Search</button>
+                            }
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Education Items</div>
+                            <!-- Table -->
+                            <table class="table table-striped table-fixed-1">
+                                <thead>
+                                    <tr class="clearfix text-center col-md-12">
+                                        <th class="col-md-4">Subject Matter :</th>
+                                        <th class="col-md-3">Education Name :</th>
+                                        <th class="col-md-2"># of Modules :</th>
+                                        <th class="col-md-1">Date Added :</th>
+                                        <th class="col-md-1">Phases Completed</th>      
+                                        <th class="col-md-1">Action</th>
+                                                                         
+                                </thead>
+                                <tbody class="col-md-12" id="main" data-bind="event: { scroll: scrolled }">
+                                    <!-- ko if:EducatoinSearchResults!= null-->
+                                    <!-- ko foreach:EducatoinSearchResults -->
+                                    <tr class="clearfix row col-md-12">
+                                        <td class="col-md-4">
+                                            <span data-bind="text:CollegeName"></span>
+                                        </td>
+                                        <td class="col-md-3">
+                                            <span class="paddingleft20" data-bind="text:CourseName"></span>
+                                        </td>
+                                        <td class="col-md-2">
+                                            <span class="paddingleft45" data-bind="text:NumberOfModule"></span>
+                                        </td>
+                                        <td class="col-md-1">
+                                            <span class="paddingleft45" data-bind="text:CourseUploadDate"></span>
+                                        </td>
+                                        <td class="col-md-1">
+                                            <span class="paddingleft45" data-bind="text:ReadyToDisplay"></span>
+                                        </td>
+                                        <td class="col-md-1">
+                                            <a href="#" class="inner-content-link blue paddingleft45" style="color: #808080;" data-bind="click:$root.updateEducation">Edit</a>
+                                        </td>
+                                    </tr>
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="loaderDiv" class="loaderbg">
+                        <input class="loader" type="image" id="loading1" src="~/Content/imgs/loading.gif">
+                    </div>
+                </div>
+            </div>
+            <!-- row-end -->
+        </div>
+        <!-- /inner-wrapper -->
+    </div>
+</div>
+@section scripts{
+    <script src="~/Scripts/knockout/viewmodel/views/Education/SearchEducationViewModel.js"></script>
+    <script type="text/javascript">
+        var searchEducationViewModel = new SearchEducationViewModel();
+        ko.applyBindings(searchEducationViewModel, $("#divSearchEducation").get(0));
+    </script>
+}
